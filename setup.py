@@ -19,5 +19,6 @@ setup(
         "console_scripts": [
             "syscall_number=syscall_number.syscall_number:main",
         ]
-    }
+    },
+    python_requires=">=3.6"
 )
