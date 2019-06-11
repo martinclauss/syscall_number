@@ -71,3 +71,7 @@ echo "mov eax, $(syscall_number -s exit -b 32 -q); mov ebx, 42; int 0x80" | asm
 ## Contribution
 
 Pull Requests are welcome! :)
+
+## Thanks
+
+[@tbehner](https://github.com/tbehner)
