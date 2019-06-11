@@ -2,6 +2,7 @@
 
 # pylint: disable=line-too-long
 # pylint: disable=missing-docstring
+# flake8: max-line-length = 120
 
 
 import json
@@ -145,33 +146,34 @@ def print_single_syscall(syscall_name, syscalls, quiet):
         print(syscalls[syscall_name])
     else:
         print("The syscall number for {0} is: {1} (0x{1:X})".format(
-                syscall_name,
-                syscalls[syscall_name]
-            )
-        )
+            syscall_name,
+            syscalls[syscall_name],
+        ))
 
 
 def check_cache_directory():
     directory = "{}/.cache/syscall_number".format(os.environ["HOME"])
-    
+
     if not pathlib.Path(directory).exists():
         os.mkdir(directory)
 
 
 @click.command()
 @click.option("-s", "--syscall-name", "syscall_name", help="The name of the syscall you want the number for.")
-@click.option("-b", "--bitness", required=True, type=click.Choice([BITNESS_32, BITNESS_64]), help="Bitness, for example, 32 or 64")
-@click.option("-a", "--all", "all_syscalls", is_flag=True, help="Print the whole system call table for the current machine.")
+@click.option("-b", "--bitness",
+              required=True, type=click.Choice([BITNESS_32, BITNESS_64]), help="Bitness, for example, 32 or 64")
+@click.option("-a", "--all", "all_syscalls",
+              is_flag=True, help="Print the whole system call table for the current machine.")
 @click.option("-q", "--quiet", is_flag=True, help="Just output the number in decimal without any additional text.")
 def main(syscall_name, bitness, all_syscalls, quiet):
     try:
         if not check_program("gcc"):
             raise RuntimeError("This script needs gcc to be installed!")
-        
+
         check_cache_directory()
 
         syscalls_32bit, syscalls_64bit = check_cache()
-            
+
         if bitness == BITNESS_32:
             syscalls = syscalls_32bit
         else:
@@ -179,7 +181,7 @@ def main(syscall_name, bitness, all_syscalls, quiet):
 
         if all_syscalls:
             print_all_syscalls(syscalls)
-        else:   
+        else:
             print_single_syscall(syscall_name, syscalls, quiet)
 
     except (ValueError, RuntimeError) as error:
