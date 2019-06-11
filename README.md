@@ -2,7 +2,7 @@
 
 ## Description
 
-With this little script you can search for Intel x86 Linux system call names and get the system call number as a result. There are websites like https://filippo.io/linux-syscall-table/ or https://www.informatik.htw-dresden.de/~beck/ASM/syscall_list.html but who want's to google all the time whe he/she can have a command-line tool that works for 32bit **and** 64bit!
+With this little script you can search for Intel x86 Linux system call names and get the system call number as a result. There are websites like https://filippo.io/linux-syscall-table/ or https://www.informatik.htw-dresden.de/~beck/ASM/syscall_list.html but who wants to google all the time whe he/she can have a command-line tool that works for 32bit **and** 64bit!
 
 ## Requirements
 
@@ -20,7 +20,7 @@ sudo dnf install gcc glibc-devel.i686
 
 ## Installation
 
-Requires Python version >= 3.6!
+Requires Python version >= 3.6! (check with `python3 --version`)
 
 ```
 pip3 install --user git+https://github.com/martinclauss/syscall_number.git
@@ -45,7 +45,7 @@ pip3 uninstall syscall_number
 remove the global installation
 
 ```
-sudo pip uninstall syscall_number
+sudo pip3 uninstall syscall_number
 ```
 
 ## Usage
