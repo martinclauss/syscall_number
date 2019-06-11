@@ -8,7 +8,7 @@ With this little script you can search for Intel x86 Linux system call names and
 
 ### gcc with 32bit support
 
-Debian/Ubuntu:
+Ubuntu:
 ```
 sudo apt-get install gcc gcc-multilib
 ```
@@ -19,6 +19,8 @@ sudo dnf install gcc glibc-devel.i686
 ```
 
 ## Installation
+
+Requires Python version >= 3.6!
 
 ```
 pip3 install --user git+https://github.com/martinclauss/syscall_number.git
