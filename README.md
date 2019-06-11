@@ -1,4 +1,4 @@
-# syscal_number
+# syscall_number
 
 ## Description
 
