@@ -1,4 +1,4 @@
-# syscal_number.py
+# syscal_number
 
 ## Description
 
