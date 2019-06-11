@@ -16,7 +16,6 @@ from collections import OrderedDict
 from operator import itemgetter
 
 import click
-import crayons
 
 
 CONFIG = {
