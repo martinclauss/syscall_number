@@ -158,6 +158,11 @@ def check_cache_directory():
         os.mkdir(directory)
 
 
+def check_syscall_header_file():
+    if not pathlib.Path(CONFIG["syscall_header_file"]).exists():
+        raise RuntimeError("Install gcc with 32bit support: https://github.com/martinclauss/syscall_number#gcc-with-32bit-support")
+
+
 @click.command()
 @click.option("-s", "--syscall-name", "syscall_name", help="The name of the syscall you want the number for.")
 @click.option("-b", "--bitness",
@@ -171,6 +176,7 @@ def main(syscall_name, bitness, all_syscalls, quiet):
             raise RuntimeError("This script needs gcc to be installed!")
 
         check_cache_directory()
+        check_syscall_header_file()
 
         syscalls_32bit, syscalls_64bit = check_cache()
 
