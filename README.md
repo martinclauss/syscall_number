@@ -70,6 +70,10 @@ syscall_number -s connect -b 32 -q
 echo "mov eax, $(syscall_number -s exit -b 32 -q); mov ebx, 42; int 0x80" | asm
 ```
 
+## Alternatives
+
+[pwntools](http://docs.pwntools.com/en/stable/) also provides a similar but more complex method with the `syscall()` function: [32bit](http://docs.pwntools.com/en/stable/shellcraft/i386.html#pwnlib.shellcraft.i386.linux.syscall) and [64bit](http://docs.pwntools.com/en/stable/shellcraft/amd64.html#pwnlib.shellcraft.amd64.linux.syscall).
+
 ## Contribution
 
 Pull Requests are welcome! :)
