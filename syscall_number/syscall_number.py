@@ -139,9 +139,6 @@ def print_all_syscalls(syscalls):
 
 
 def print_single_syscall(syscall_name, syscalls, quiet):
-    if syscall_name not in syscalls.keys():
-        raise ValueError("The syscall name you provided is not available!")
-
     if quiet:
         print(syscalls[syscall_name])
     else:
@@ -214,6 +211,9 @@ def main(syscall_name, bitness, all_syscalls, quiet, man_page):
         if all_syscalls:
             print_all_syscalls(syscalls)
         else:
+            if syscall_name not in syscalls.keys():
+                raise ValueError("The syscall name you provided is not available!")
+
             print_single_syscall(syscall_name, syscalls, quiet)
 
             if man_page:
