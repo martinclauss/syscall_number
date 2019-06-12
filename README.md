@@ -52,22 +52,27 @@ sudo pip3 uninstall syscall_number
 
 ```
 # the first time the command takes a bit longer since it builds a cache for all system calls
+# query the system call (-s) read for 32bit (-b 32):
 syscall_number -s read -b 32
 
 # this should run a lot faster
+# query the system call (-s) write for 64bit (-b 64):
 syscall_number -s write -b 64
 
-# this lists all 32bit system calls
+# this lists all (-a) 32bit (-b 32) system calls:
 syscall_number -a -b 32
 
-# and this lists all 64bit system calls
+# and this lists all (-a) 64bit (-b 64) system calls:
 syscall_number -a -b 64
 
-# if you just want the system call number without any additional text use this
+# if you just want the system call number without any additional text use -q:
 syscall_number -s connect -b 32 -q
 
 # or in a more complex scenario with pwntools' asm script (http://docs.pwntools.com/en/stable/asm.html)
 echo "mov eax, $(syscall_number -s exit -b 32 -q); mov ebx, 42; int 0x80" | asm
+
+# additionally show an excerpt of the man page for the system call with -m:
+syscall_number -s read -b 32 -m
 ```
 
 ## Alternatives
