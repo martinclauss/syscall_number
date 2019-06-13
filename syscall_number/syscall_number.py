@@ -139,9 +139,6 @@ def print_all_syscalls(syscalls):
 
 
 def print_single_syscall(syscall_name, syscalls, quiet):
-    if syscall_name not in syscalls.keys():
-        raise ValueError("The syscall name you provided is not available!")
-
     if quiet:
         print(syscalls[syscall_name])
     else:
@@ -163,6 +160,31 @@ def check_syscall_header_file():
         raise RuntimeError("Install gcc with 32bit support: https://github.com/martinclauss/syscall_number#gcc-with-32bit-support")
 
 
+def print_man_page_info(syscall_name):
+    man_environment_variables = {
+        "MANPAGER": "cat",
+        "COLUMNS": "80"
+    }
+
+    command = "man 2 {}".format(syscall_name)
+    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE, env=man_environment_variables)
+    stdout, _ = process.communicate()
+
+    stdout = stdout.decode()
+    information_regex = re.compile(r"(NAME(.|\n)+)\n\nDESCRIPTION")
+
+    match = information_regex.search(stdout)
+
+    if match:
+        man_text = "\n"
+        man_text += match.group(1)
+        man_text += "\n\n...for more details run \"{}\"".format(command)
+    else:
+        man_text = "no man page info available"
+
+    print(man_text)
+
+
 @click.command()
 @click.option("-s", "--syscall-name", "syscall_name", help="The name of the syscall you want the number for.")
 @click.option("-b", "--bitness",
@@ -170,7 +192,8 @@ def check_syscall_header_file():
 @click.option("-a", "--all", "all_syscalls",
               is_flag=True, help="Print the whole system call table for the current machine.")
 @click.option("-q", "--quiet", is_flag=True, help="Just output the number in decimal without any additional text.")
-def main(syscall_name, bitness, all_syscalls, quiet):
+@click.option("-m", "--man-page", "man_page", is_flag=True, help="Print a part of the man page for the queried system call.")
+def main(syscall_name, bitness, all_syscalls, quiet, man_page):
     try:
         if not check_program("gcc"):
             raise RuntimeError("This script needs gcc to be installed!")
@@ -188,7 +211,13 @@ def main(syscall_name, bitness, all_syscalls, quiet):
         if all_syscalls:
             print_all_syscalls(syscalls)
         else:
+            if syscall_name not in syscalls.keys():
+                raise ValueError("The syscall name you provided is not available!")
+
             print_single_syscall(syscall_name, syscalls, quiet)
+
+            if man_page:
+                print_man_page_info(syscall_name)
 
     except (ValueError, RuntimeError) as error:
         print(str(error))

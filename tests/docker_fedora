@@ -1,8 +1,11 @@
 FROM fedora
 
+# do not exclude man pages... this is a Docker-specific thing
+RUN yum --setopt=tsflags='' install man man-db man-pages -y
+
 RUN dnf install -y which git python3 python3-pip gcc glibc-devel.i686
 
 RUN pip3 install /test
 
 # just some simple tests
-CMD syscall_number -s read -b 32; syscall_number -a -b 64
+CMD syscall_number -s read -b 32; syscall_number -a -b 64; syscall_number -s write -b 32 -m
