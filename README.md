@@ -50,7 +50,7 @@ sudo pip3 uninstall syscall_number
 
 ## Usage
 
-```
+```shell
 # the first time the command takes a bit longer since it builds a cache for all system calls
 # query the system call (-s) read for 32bit (-b 32):
 syscall_number -s read -b 32
