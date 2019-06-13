@@ -36,6 +36,20 @@ Now you can run the command without the `.py` extension from everywhere:
 syscall_number --help
 ```
 
+## Updates
+
+You won't get new features / bug fixes automatically but you can easily update:
+
+```
+pip3 install --user --upgrade git+https://github.com/martinclauss/syscall_number.git
+```
+
+or
+
+```
+sudo pip3 install --upgrade git+https://github.com/martinclauss/syscall_number.git
+```
+
 ## Uninstallation
 
 ```
