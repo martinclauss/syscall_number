@@ -79,6 +79,9 @@ syscall_number -a -b 32
 # and this lists all (-a) 64bit (-b 64) system calls:
 syscall_number -a -b 64
 
+# reverse search is also possible with grep:
+syscall_number -a -b 32 | grep read
+
 # if you just want the system call number without any additional text use -q:
 syscall_number -s connect -b 32 -q
 
