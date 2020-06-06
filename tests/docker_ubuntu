@@ -1,11 +1,10 @@
-FROM ubuntu
+FROM ubuntu:latest
 
-# do not exclude man pages and documentation... this is a Docker-specific thing
-RUN rm /etc/dpkg/dpkg.cfg.d/excludes
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y man manpages-dev manpages-posix-dev git python3 python3-pip gcc locales-all gcc-multilib
+# hack so that the man pages are available
+RUN yes "y" | unminimize
 
-RUN apt-get update && apt-get install -y man manpages-dev manpages-posix-dev git python3 python3-pip gcc locales-all gcc-multilib
-
-RUN pip3 install /test
+RUN python3 -m pip install /test
 
 ENV LC_ALL en_US.UTF-8
 ENV LC_LANG en_US.UTF-8
