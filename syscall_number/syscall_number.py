@@ -134,7 +134,7 @@ def print_all_syscalls(syscalls):
     for syscall_name, syscall_number in syscalls.items():
         if syscall_number == -1:  # filter out n/a syscall numbers
             continue
-
+        
         print("{0:3} (0x{0:X}): {1}".format(syscall_number, syscall_name))
 
 
@@ -147,6 +147,20 @@ def print_single_syscall(syscall_name, syscalls, quiet):
             syscalls[syscall_name],
         ))
 
+def print_syscall_name(syscall_number, syscalls, quiet):   
+    syscall_name = None 
+    for name, number in syscalls.items():
+        if number == syscall_number:
+            syscall_name = name
+            break
+    
+    if quiet:
+        print(syscall_name)
+    else:
+        print("The syscall name for syscall number {0} is: {1}".format(
+            syscall_number,
+            syscall_name
+        ))
 
 def check_cache_directory():
     directory = "{}/.cache/syscall_number".format(os.environ["HOME"])
@@ -186,6 +200,7 @@ def print_man_page_info(syscall_name):
 
 
 @click.command()
+@click.option("-n", "--syscall-number", "syscall_number", type=click.IntRange(0, 999), help="The number of the syscall you want the name for.")
 @click.option("-s", "--syscall-name", "syscall_name", help="The name of the syscall you want the number for.")
 @click.option("-b", "--bitness",
               required=True, type=click.Choice([BITNESS_32, BITNESS_64]), help="Bitness, for example, 32 or 64")
@@ -193,7 +208,7 @@ def print_man_page_info(syscall_name):
               is_flag=True, help="Print the whole system call table for the current machine.")
 @click.option("-q", "--quiet", is_flag=True, help="Just output the number in decimal without any additional text.")
 @click.option("-m", "--man-page", "man_page", is_flag=True, help="Print a part of the man page for the queried system call.")
-def main(syscall_name, bitness, all_syscalls, quiet, man_page):
+def main(syscall_number, syscall_name, bitness, all_syscalls, quiet, man_page):
     try:
         if not check_program("gcc"):
             raise RuntimeError("This script needs gcc to be installed!")
@@ -211,13 +226,19 @@ def main(syscall_name, bitness, all_syscalls, quiet, man_page):
         if all_syscalls:
             print_all_syscalls(syscalls)
         else:
-            if syscall_name not in syscalls.keys():
-                raise ValueError("The syscall name you provided is not available!")
+            if syscall_number == None:
+                if syscall_name not in syscalls.keys():
+                    raise ValueError("The syscall name you provided is not available!")
 
-            print_single_syscall(syscall_name, syscalls, quiet)
-
-            if man_page:
-                print_man_page_info(syscall_name)
+                print_single_syscall(syscall_name, syscalls, quiet)
+                
+                if man_page:
+                    print_man_page_info(syscall_name)
+            else:
+                if syscall_number not in syscalls.values():
+                    raise ValueError("The syscall number you provided is not available!")
+                
+                print_syscall_name(syscall_number, syscalls, quiet)
 
     except (ValueError, RuntimeError) as error:
         print(str(error))
