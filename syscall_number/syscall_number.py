@@ -163,9 +163,7 @@ def print_single_syscall(syscall_name, syscalls, quiet):
         )
 
 
-def print_syscall_name(syscall_number, syscalls, quiet):
-    syscall_name = None
-
+def get_and_print_syscall_name(syscall_number, syscalls, quiet):
     for name, number in syscalls.items():
         if number == syscall_number:
             syscall_name = name
@@ -179,6 +177,8 @@ def print_syscall_name(syscall_number, syscalls, quiet):
                 syscall_number, syscall_name
             )
         )
+
+    return syscall_name
 
 
 def check_cache_directory():
@@ -294,7 +294,9 @@ def main(syscall_number, syscall_name, bitness, all_syscalls, quiet, man_page):
                         "The syscall number you provided is not available!"
                     )
 
-                print_syscall_name(syscall_number, syscalls, quiet)
+                syscall_name = get_and_print_syscall_name(
+                    syscall_number, syscalls, quiet
+                )
 
             if man_page:
                 print_man_page_info(syscall_name)
