@@ -73,6 +73,10 @@ syscall_number -s read -b 32
 # query the system call (-s) write for 64bit (-b 64):
 syscall_number -s write -b 64
 
+# reverse lookup is also possible with decimal and hexadecimal numbers
+syscall_number -n 11 -b 32
+syscall_number -n 0xb -b 32 
+
 # this lists all (-a) 32bit (-b 32) system calls:
 syscall_number -a -b 32
 
@@ -90,7 +94,10 @@ echo "mov eax, $(syscall_number -s exit -b 32 -q); mov ebx, 42; int 0x80" | asm
 
 # additionally show an excerpt of the man page for the system call with -m:
 syscall_number -s read -b 32 -m
+
+
 ```
+
 
 ## Alternatives
 
