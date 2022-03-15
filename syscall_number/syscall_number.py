@@ -21,8 +21,12 @@ import click
 
 CONFIG = {
     "syscall_header_file": "/usr/include/bits/syscall.h",
-    "cache_file_32bit": "{}/.cache/syscall_number/32bit.json".format(os.environ["HOME"]),
-    "cache_file_64bit": "{}/.cache/syscall_number/64bit.json".format(os.environ["HOME"]),
+    "cache_file_32bit": "{}/.cache/syscall_number/32bit.json".format(
+        os.environ["HOME"]
+    ),
+    "cache_file_64bit": "{}/.cache/syscall_number/64bit.json".format(
+        os.environ["HOME"]
+    ),
 }
 
 
@@ -65,7 +69,9 @@ def parse_syscall_names():
 
 def check_program(program_name):
     try:
-        output = subprocess.check_output("which {}".format(program_name).split(), shell=False)
+        output = subprocess.check_output(
+            "which {}".format(program_name).split(), shell=False
+        )
     except OSError:
         output = ""
 
@@ -91,7 +97,11 @@ def get_syscall_number(syscall_name, bitness):
     else:
         cflags = ""
 
-    gcc_process = subprocess.Popen(shlex.split("gcc {} -E -".format(cflags)), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    gcc_process = subprocess.Popen(
+        shlex.split("gcc {} -E -".format(cflags)),
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+    )
     gcc_process.stdin.write(b"#include <sys/syscall.h>\nSYS_%s" % syscall_name.encode())
     stdout, _ = gcc_process.communicate()
 
@@ -113,7 +123,10 @@ def generate_syscalls(syscall_names, bitness):
 
 
 def cache_files_exist():
-    return pathlib.Path(CONFIG["cache_file_32bit"]).exists() and pathlib.Path(CONFIG["cache_file_64bit"]).exists()
+    return (
+        pathlib.Path(CONFIG["cache_file_32bit"]).exists()
+        and pathlib.Path(CONFIG["cache_file_64bit"]).exists()
+    )
 
 
 def check_cache():
@@ -134,33 +147,39 @@ def print_all_syscalls(syscalls):
     for syscall_name, syscall_number in syscalls.items():
         if syscall_number == -1:  # filter out n/a syscall numbers
             continue
-        
-        print("{0:3} (0x{0:X}): {1}".format(syscall_number, syscall_name))
+
+        print("{0:3} (0x{0:x}): {1}".format(syscall_number, syscall_name))
 
 
 def print_single_syscall(syscall_name, syscalls, quiet):
     if quiet:
         print(syscalls[syscall_name])
     else:
-        print("The syscall number for {0} is: {1} (0x{1:X})".format(
-            syscall_name,
-            syscalls[syscall_name],
-        ))
+        print(
+            "The syscall number for {0} is: {1} (0x{1:x})".format(
+                syscall_name,
+                syscalls[syscall_name],
+            )
+        )
 
-def print_syscall_name(syscall_number, syscalls, quiet):   
-    syscall_name = None 
+
+def print_syscall_name(syscall_number, syscalls, quiet):
+    syscall_name = None
+
     for name, number in syscalls.items():
         if number == syscall_number:
             syscall_name = name
             break
-    
+
     if quiet:
         print(syscall_name)
     else:
-        print("The syscall name for syscall number {0} is: {1}".format(
-            syscall_number,
-            syscall_name
-        ))
+        print(
+            "The syscall name for syscall number {0} (0x{0:x}) is: {1}".format(
+                syscall_number, syscall_name
+            )
+        )
+
 
 def check_cache_directory():
     directory = "{}/.cache/syscall_number".format(os.environ["HOME"])
@@ -171,17 +190,18 @@ def check_cache_directory():
 
 def check_syscall_header_file():
     if not pathlib.Path(CONFIG["syscall_header_file"]).exists():
-        raise RuntimeError("Install gcc with 32bit support: https://github.com/martinclauss/syscall_number#gcc-with-32bit-support")
+        raise RuntimeError(
+            "Install gcc with 32bit support: https://github.com/martinclauss/syscall_number#gcc-with-32bit-support"
+        )
 
 
 def print_man_page_info(syscall_name):
-    man_environment_variables = {
-        "MANPAGER": "cat",
-        "COLUMNS": "80"
-    }
+    man_environment_variables = {"MANPAGER": "cat", "COLUMNS": "80"}
 
     command = "man 2 {}".format(syscall_name)
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE, env=man_environment_variables)
+    process = subprocess.Popen(
+        command.split(), stdout=subprocess.PIPE, env=man_environment_variables
+    )
     stdout, _ = process.communicate()
 
     stdout = stdout.decode()
@@ -192,7 +212,7 @@ def print_man_page_info(syscall_name):
     if match:
         man_text = "\n"
         man_text += match.group(1)
-        man_text += "\n\n...for more details run \"{}\"".format(command)
+        man_text += '\n\n...for more details run "{}"'.format(command)
     else:
         man_text = "no man page info available"
 
@@ -200,14 +220,45 @@ def print_man_page_info(syscall_name):
 
 
 @click.command()
-@click.option("-n", "--syscall-number", "syscall_number", type=click.IntRange(0, 999), help="The number of the syscall you want the name for.")
-@click.option("-s", "--syscall-name", "syscall_name", help="The name of the syscall you want the number for.")
-@click.option("-b", "--bitness",
-              required=True, type=click.Choice([BITNESS_32, BITNESS_64]), help="Bitness, for example, 32 or 64")
-@click.option("-a", "--all", "all_syscalls",
-              is_flag=True, help="Print the whole system call table for the current machine.")
-@click.option("-q", "--quiet", is_flag=True, help="Just output the number in decimal without any additional text.")
-@click.option("-m", "--man-page", "man_page", is_flag=True, help="Print a part of the man page for the queried system call.")
+@click.option(
+    "-n",
+    "--syscall-number",
+    "syscall_number",
+    help="The number of the syscall you want the name for.",
+)
+@click.option(
+    "-s",
+    "--syscall-name",
+    "syscall_name",
+    help="The name of the syscall you want the number for.",
+)
+@click.option(
+    "-b",
+    "--bitness",
+    required=True,
+    type=click.Choice([BITNESS_32, BITNESS_64]),
+    help="Bitness, for example, 32 or 64",
+)
+@click.option(
+    "-a",
+    "--all",
+    "all_syscalls",
+    is_flag=True,
+    help="Print the whole system call table for the current machine.",
+)
+@click.option(
+    "-q",
+    "--quiet",
+    is_flag=True,
+    help="Just output the number in decimal without any additional text.",
+)
+@click.option(
+    "-m",
+    "--man-page",
+    "man_page",
+    is_flag=True,
+    help="Print a part of the man page for the queried system call.",
+)
 def main(syscall_number, syscall_name, bitness, all_syscalls, quiet, man_page):
     try:
         if not check_program("gcc"):
@@ -231,14 +282,22 @@ def main(syscall_number, syscall_name, bitness, all_syscalls, quiet, man_page):
                     raise ValueError("The syscall name you provided is not available!")
 
                 print_single_syscall(syscall_name, syscalls, quiet)
-                
-                if man_page:
-                    print_man_page_info(syscall_name)
+
             else:
+                if syscall_number.startswith("0x"):
+                    syscall_number = int(syscall_number, 16)
+                else:
+                    syscall_number = int(syscall_number)
+
                 if syscall_number not in syscalls.values():
-                    raise ValueError("The syscall number you provided is not available!")
-                
+                    raise ValueError(
+                        "The syscall number you provided is not available!"
+                    )
+
                 print_syscall_name(syscall_number, syscalls, quiet)
+
+            if man_page:
+                print_man_page_info(syscall_name)
 
     except (ValueError, RuntimeError) as error:
         print(str(error))
