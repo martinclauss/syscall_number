@@ -20,15 +20,19 @@ sudo dnf install gcc glibc-devel.i686
 
 ## Installation
 
-Requires Python version >= 3.6! (check with `python3 --version`)
+Make sure you have a Python version >= 3.6! (check with `python3 --version`)
+
+Create and activate a virtual environment:
 
 ```
-pip3 install --user git+https://github.com/martinclauss/syscall_number.git
+python3 -m venv venv
+source ./venv/bin/activate
 ```
 
-for a system-wide installation
+This virtual environment must then be active everytime you want to use `syscall_number`.
+
 ```
-sudo pip3 install git+https://github.com/martinclauss/syscall_number.git
+python3 -m pip install git+https://github.com/martinclauss/syscall_number.git
 ```
 
 Now you can run the command without the `.py` extension from everywhere:
@@ -41,25 +45,13 @@ syscall_number --help
 You won't get new features / bug fixes automatically but you can easily update:
 
 ```
-pip3 install --user --upgrade git+https://github.com/martinclauss/syscall_number.git
-```
-
-or
-
-```
-sudo pip3 install --upgrade git+https://github.com/martinclauss/syscall_number.git
+python3 -m pip install --upgrade git+https://github.com/martinclauss/syscall_number.git
 ```
 
 ## Uninstallation
 
 ```
-pip3 uninstall syscall_number
-```
-
-remove the global installation
-
-```
-sudo pip3 uninstall syscall_number
+python3 -m pip uninstall syscall_number
 ```
 
 ## Usage
